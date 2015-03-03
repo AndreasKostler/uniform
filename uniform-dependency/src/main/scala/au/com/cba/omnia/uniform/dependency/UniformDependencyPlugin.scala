@@ -134,7 +134,8 @@ object UniformDependencyPlugin extends Plugin {
 
     def scrooge(scrooge: String = versions.scrooge, bijection: String = versions.bijection) = Seq(
       "com.twitter"              %% "scrooge-core"                  % scrooge,
-      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", "scrooge-core_2.10")
+      // TODO not sure that excluding libthrift. parquet-cascading depends indirectly on elephant-bird-core, which marks a newer version of libthrift as provided, but I can't see it in hadoop classpath
+      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", "scrooge-core_2.10") exclude("org.apache.thrift", "libthrift")
     )
 
     def parquet(version: String = versions.parquet) = Seq(
