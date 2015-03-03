@@ -32,6 +32,45 @@ object UniformDependencyPlugin extends Plugin {
     )
   )
 
+  val strictDependencySettings: Seq[Sett] = Seq[Sett](
+    conflictManager := ConflictManager.strict,
+
+    // pin the scala versions
+    dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-library" % sv),
+
+    // pin hadoop jars to hadoop classpath versions
+    dependencyOverrides += "org.slf4j"                 % "slf4j-api"          % "1.7.5",
+    dependencyOverrides += "org.slf4j"                 % "slf4j-log4j12"      % "1.7.5",
+    dependencyOverrides += "log4j"                     % "log4j"              % "1.2.17",
+    dependencyOverrides += "commons-logging"           % "commons-logging"    % "1.1.3",
+    dependencyOverrides += "commons-codec"             % "commons-codec"      % "1.5",
+    dependencyOverrides += "commons-lang"              % "commons-lang"       % "2.6",
+    dependencyOverrides += "commons-httpclient"        % "commons-httpclient" % "3.1",
+    dependencyOverrides += "org.apache.httpcomponents" % "httpclient"         % "4.2.5",
+    dependencyOverrides += "org.apache.httpcomponents" % "httpcore"           % "4.2.5",
+    dependencyOverrides += "com.google.guava"          % "guava"              % "11.0.2",
+    dependencyOverrides += "org.codehaus.jackson"      % "jackson-mapper-asl" % "1.8.8",
+    dependencyOverrides += "org.codehaus.jackson"      % "jackson-core-asl"   % "1.8.8",
+    dependencyOverrides += "org.xerial.snappy"         % "snappy-java"        % "1.0.4.1",
+    dependencyOverrides += "com.google.protobuf"       % "protobuf-java"      % "2.5.0",
+    dependencyOverrides += "io.netty"                  % "netty"              % "3.6.2.Final",
+    dependencyOverrides += "junit"                     % "junit"              % "4.11",
+
+    // asm changed from asm.asm-3.2, to org.ow2.asm.asm-4.0, so can't naively pin the version
+    // TODO consider doing something more complicated to change all org.ow2.asm.asm deps to asm.asm-3.2
+    // for now just ensure that all org.ow2.asm.asm jars are as close to 3.2 as possible
+    dependencyOverrides += "org.ow2.asm"               % "asm"                % "4.0",
+    dependencyOverrides += "asm"                       % "asm"                % "3.2",
+
+    // as far as I can tell, libthrift is not on the hadoop classpath
+    // different versions of libthrift are pulled in by depend.hive, depend.scrooge, and parquet-cascading
+    // different projects could rely on different combinations of these, so cannot rely on "canonical" source
+    // TODO parquet-cascading is marked as provided, so am I sure this is not on hadoop classpath? do I need to add extra jars to depend.parquet?
+    // TODO consider replacing pinned version with logic which chooses the latest version from the versions pulled in, just for this jar
+    // for now using dependencyOverrides to pin version to latest one we could possibly pull in
+    dependencyOverrides += "org.apache.thrift"         % "libthrift"          % "0.9.0-cdh5-2"
+  )
+
   object depend {
     object versions {
       def hadoop       = "2.5.0-mr1-cdh5.2.0"
@@ -134,8 +173,7 @@ object UniformDependencyPlugin extends Plugin {
 
     def scrooge(scrooge: String = versions.scrooge, bijection: String = versions.bijection) = Seq(
       "com.twitter"              %% "scrooge-core"                  % scrooge,
-      // TODO not sure that excluding libthrift. parquet-cascading depends indirectly on elephant-bird-core, which marks a newer version of libthrift as provided, but I can't see it in hadoop classpath
-      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", "scrooge-core_2.10") exclude("org.apache.thrift", "libthrift")
+      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", "scrooge-core_2.10")
     )
 
     def parquet(version: String = versions.parquet) = Seq(
