@@ -134,7 +134,7 @@ object UniformDependencyPlugin extends Plugin {
 
     def scrooge(scrooge: String = versions.scrooge, bijection: String = versions.bijection) = Seq(
       "com.twitter"              %% "scrooge-core"                  % scrooge,
-      "com.twitter"              %% "bijection-scrooge"             % bijection
+      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", "scrooge-core_2.10")
     )
 
     def parquet(version: String = versions.parquet) = Seq(
