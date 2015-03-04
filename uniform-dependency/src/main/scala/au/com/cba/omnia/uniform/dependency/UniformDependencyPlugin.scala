@@ -151,7 +151,7 @@ object UniformDependencyPlugin extends Plugin {
       scalacheck: String = versions.scalacheck, scalaz: String = versions.scalaz,
       pegdown: String = versions.pegdown, classutil: String = versions.classutil
     ) = Seq(
-      "org.specs2"               %% "specs2"                        % specs       % "test",
+      "org.specs2"               %% "specs2"                        % specs       % "test" exclude("org.scalacheck", "scalacheck_2.10"),
       "org.mockito"              %  "mockito-all"                   % mockito     % "test",
       "org.scalacheck"           %% "scalacheck"                    % scalacheck  % "test",
       "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test",
