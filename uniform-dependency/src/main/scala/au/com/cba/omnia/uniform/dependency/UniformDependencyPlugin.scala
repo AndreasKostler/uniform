@@ -132,7 +132,7 @@ object UniformDependencyPlugin extends Plugin {
     def hadoopClasspath = hadoopCP.dependencies
 
     def hive(version: String = versions.hive) = Seq(
-      "org.apache.hive"          % "hive-exec"                      % version
+      noHadoop("org.apache.hive" % "hive-exec"                      % version)
     )
 
     def scalaz(version: String = versions.scalaz) = Seq(
