@@ -157,7 +157,7 @@ object UniformDependencyPlugin extends Plugin {
       "org.mockito"              %  "mockito-all"                   % mockito     % "test",
       "org.scalacheck"           %% "scalacheck"                    % scalacheck  % "test",
       "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test",
-      "org.clapper"              %% "classutil"                     % classutil   % "test"
+      "org.clapper"              %% "classutil"                     % classutil   % "test" exclude("org.ow2.asm", "asm-util") exclude("org.ow2.asm", "asm") exclude("org.ow2.asm", "asm-tree")
     )
 
     def time(joda: String = versions.jodaTime, nscala: String = versions.nscalaTime) = Seq(
