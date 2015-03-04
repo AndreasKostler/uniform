@@ -34,42 +34,48 @@ object UniformDependencyPlugin extends Plugin {
 
   val strictDependencySettings: Seq[Sett] = Seq[Sett](
     conflictManager := ConflictManager.strict,
-
-    // pin the scala versions
-    dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-library" % sv),
-
-    // pin hadoop jars to hadoop classpath versions
-    dependencyOverrides += "org.slf4j"                 % "slf4j-api"          % "1.7.5",
-    dependencyOverrides += "org.slf4j"                 % "slf4j-log4j12"      % "1.7.5",
-    dependencyOverrides += "log4j"                     % "log4j"              % "1.2.17",
-    dependencyOverrides += "commons-logging"           % "commons-logging"    % "1.1.3",
-    dependencyOverrides += "commons-codec"             % "commons-codec"      % "1.5",
-    dependencyOverrides += "commons-lang"              % "commons-lang"       % "2.6",
-    dependencyOverrides += "commons-httpclient"        % "commons-httpclient" % "3.1",
-    dependencyOverrides += "org.apache.httpcomponents" % "httpclient"         % "4.2.5",
-    dependencyOverrides += "org.apache.httpcomponents" % "httpcore"           % "4.2.5",
-    dependencyOverrides += "com.google.guava"          % "guava"              % "11.0.2",
-    dependencyOverrides += "org.codehaus.jackson"      % "jackson-mapper-asl" % "1.8.8",
-    dependencyOverrides += "org.codehaus.jackson"      % "jackson-core-asl"   % "1.8.8",
-    dependencyOverrides += "org.xerial.snappy"         % "snappy-java"        % "1.0.4.1",
-    dependencyOverrides += "com.google.protobuf"       % "protobuf-java"      % "2.5.0",
-    dependencyOverrides += "io.netty"                  % "netty"              % "3.6.2.Final",
-    dependencyOverrides += "junit"                     % "junit"              % "4.11",
-
-    // asm changed from asm.asm-3.2, to org.ow2.asm.asm-4.0, so can't naively pin the version
-    // TODO consider doing something more complicated to change all org.ow2.asm.asm deps to asm.asm-3.2
-    // for now just ensure that all org.ow2.asm.asm jars are as close to 3.2 as possible
-    dependencyOverrides += "org.ow2.asm"               % "asm"                % "4.0",
-    dependencyOverrides += "asm"                       % "asm"                % "3.2",
-
-    // as far as I can tell, libthrift is not on the hadoop classpath
-    // different versions of libthrift are pulled in by depend.hive, depend.scrooge, and parquet-cascading
-    // different projects could rely on different combinations of these, so cannot rely on "canonical" source
-    // TODO parquet-cascading is marked as provided, so am I sure this is not on hadoop classpath? do I need to add extra jars to depend.parquet?
-    // TODO consider replacing pinned version with logic which chooses the latest version from the versions pulled in, just for this jar
-    // for now using dependencyOverrides to pin version to latest one we could possibly pull in
-    dependencyOverrides += "org.apache.thrift"         % "libthrift"          % "0.9.0-cdh5-2"
+    dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-library" % sv)
   )
+
+  def noHadoop(module: ModuleID) = module.copy(exclusions = module.exclusions ++ hadoopCP.exclusions)
+
+  object hadoopCP {
+    val modules = List[ModuleID](
+      "org.slf4j"                 % "slf4j-api"          % "1.7.5",
+      "org.slf4j"                 % "slf4j-log4j12"      % "1.7.5",
+      "log4j"                     % "log4j"              % "1.2.17",
+      "commons-logging"           % "commons-logging"    % "1.1.3",
+      "commons-codec"             % "commons-codec"      % "1.5",
+      "commons-lang"              % "commons-lang"       % "2.6",
+      "commons-httpclient"        % "commons-httpclient" % "3.1",
+      "org.apache.httpcomponents" % "httpclient"         % "4.2.5",
+      "org.apache.httpcomponents" % "httpcore"           % "4.2.5",
+      "com.google.guava"          % "guava"              % "11.0.2",
+      "org.codehaus.jackson"      % "jackson-mapper-asl" % "1.8.8",
+      "org.codehaus.jackson"      % "jackson-core-asl"   % "1.8.8",
+      "org.xerial.snappy"         % "snappy-java"        % "1.0.4.1",
+      "com.google.protobuf"       % "protobuf-java"      % "2.5.0",
+      "io.netty"                  % "netty"              % "3.6.2.Final",
+      "junit"                     % "junit"              % "4.11",
+
+      // asm changed from asm.asm-3.2, to org.ow2.asm.asm-4.0, so can't naively pin the version
+      // TODO consider doing something more complicated to change all org.ow2.asm.asm deps to asm.asm-3.2
+      // for now just ensure that all org.ow2.asm.asm jars are as close to 3.2 as possible
+      "org.ow2.asm"               % "asm"                % "4.0",
+      "asm"                       % "asm"                % "3.2",
+
+      // as far as I can tell, libthrift is not on the hadoop classpath
+      // different versions of libthrift are pulled in by depend.hive, depend.scrooge, and parquet-cascading
+      // different projects could rely on different combinations of these, so cannot rely on "canonical" source
+      // TODO parquet-cascading is marked as provided, so am I sure this is not on hadoop classpath? do I need to add extra jars to depend.parquet?
+      // TODO consider replacing pinned version with logic which chooses the latest version from the versions pulled in, just for this jar
+      // for now using dependencyOverrides to pin version to latest one we could possibly pull in
+      "org.apache.thrift"         % "libthrift"          % "0.9.0-cdh5-2"
+    )
+
+    val dependencies = modules.map(m => m % "provided")
+    val exclusions   = modules.map(m => ExclusionRule(m.organization, m.name))
+  }
 
   object depend {
     object versions {
@@ -120,6 +126,8 @@ object UniformDependencyPlugin extends Plugin {
       "org.apache.hadoop"        %  "hadoop-client"                 % version        % "provided",
       "org.apache.hadoop"        %  "hadoop-core"                   % version        % "provided"
     )
+
+    def hadoopClasspath = hadoopCP.dependencies
 
     def hive(version: String = versions.hive) = Seq(
       "org.apache.hive"          % "hive-exec"                      % version
