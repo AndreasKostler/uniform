@@ -35,6 +35,8 @@ object UniformDependencyPlugin extends Plugin {
   val strictDependencySettings: Seq[Sett] = Seq[Sett](
     conflictManager := ConflictManager.strict,
     dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-library" % sv)
+  ) ++ hadoopCP.modules.map(module =>
+    dependencyOverrides in Test += module
   )
 
   def noHadoop(module: ModuleID) = module.copy(exclusions = module.exclusions ++ hadoopCP.exclusions)
