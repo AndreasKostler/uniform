@@ -155,7 +155,6 @@ object UniformDependencyPlugin extends Plugin {
       "org.mockito"              %  "mockito-all"                   % mockito     % "test",
       "org.scalacheck"           %% "scalacheck"                    % scalacheck  % "test",
       "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test",
-      "org.pegdown"              %  "pegdown"                       % pegdown     % "test",
       "org.clapper"              %% "classutil"                     % classutil   % "test"
     )
 
