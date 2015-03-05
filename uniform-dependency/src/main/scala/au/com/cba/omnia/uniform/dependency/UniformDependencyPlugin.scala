@@ -78,6 +78,12 @@ object UniformDependencyPlugin extends Plugin {
 
     val dependencies = modules.map(m => m % "provided" intransitive)
     val exclusions   = modules.map(m => ExclusionRule(m.organization, m.name))
+
+    def version(org: String, name: String) =
+      modules
+        .find(m => m.organization == org && m.name == name)
+        .getOrElse(throw new Exception(s"Cannot find $org.$name in list of hadoop modules"))
+        .revision
   }
 
   object depend {
@@ -152,12 +158,14 @@ object UniformDependencyPlugin extends Plugin {
     def testing(
       specs: String = versions.specs, mockito: String = versions.mockito,
       scalacheck: String = versions.scalacheck, scalaz: String = versions.scalaz,
-      pegdown: String = versions.pegdown, classutil: String = versions.classutil
+      pegdown: String = versions.pegdown, classutil: String = versions.classutil,
+      asm: String = hadoopCP.version("org.ow2.asm", "asm")
     ) = Seq(
-      "org.specs2"               %% "specs2"                        % specs       % "test" exclude("org.scalacheck", "scalacheck_2.10"),
+      "org.specs2"               %% "specs2"                        % specs       % "test" exclude("org.scalacheck", "scalacheck_2.10") exclude("org.ow2.asm", "asm"),
       "org.mockito"              %  "mockito-all"                   % mockito     % "test",
       "org.scalacheck"           %% "scalacheck"                    % scalacheck  % "test",
-      "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test"
+      "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test",
+      "org.ow2.asm"              %  "asm"                           % asm         % "test"
     )
 
     def time(joda: String = versions.jodaTime, nscala: String = versions.nscalaTime) = Seq(
