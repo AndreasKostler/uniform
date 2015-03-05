@@ -161,7 +161,7 @@ object UniformDependencyPlugin extends Plugin {
       pegdown: String = versions.pegdown, classutil: String = versions.classutil,
       asm: String = hadoopCP.version("org.ow2.asm", "asm")
     ) = Seq(
-      "org.specs2"               %% "specs2"                        % specs       % "test" exclude("org.scalacheck", "scalacheck_2.10") exclude("org.ow2.asm", "asm"),
+      "org.specs2"               %% "specs2"                        % specs       % "test" exclude("org.scalacheck", s"scalacheck_${scalaBinaryVersion.value}") exclude("org.ow2.asm", "asm"),
       "org.mockito"              %  "mockito-all"                   % mockito     % "test",
       "org.scalacheck"           %% "scalacheck"                    % scalacheck  % "test",
       "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test",
@@ -190,7 +190,7 @@ object UniformDependencyPlugin extends Plugin {
 
     def scrooge(scrooge: String = versions.scrooge, bijection: String = versions.bijection) = Seq(
       "com.twitter"              %% "scrooge-core"                  % scrooge,
-      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", "scrooge-core_2.10")
+      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", s"scrooge-core_${scalaBinaryVersion.value}")
     )
 
     def parquet(version: String = versions.parquet) = Seq(
