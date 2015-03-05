@@ -125,16 +125,16 @@ object UniformDependencyPlugin extends Plugin {
       this.logging(log4j, slf4j) ++
       this.testing(specs, mockito, scalacheck, scalaz, pegdown, classutil)
 
+    def hadoopClasspath = hadoopCP.dependencies
+
     def hadoop(version: String = versions.hadoop) = Seq(
       "org.apache.hadoop"        %  "hadoop-client"                 % version        % "provided",
       "org.apache.hadoop"        %  "hadoop-core"                   % version        % "provided"
-    )
-
-    def hadoopClasspath = hadoopCP.dependencies
+    ) map (noHadoop(_))
 
     def hive(version: String = versions.hive) = Seq(
-      noHadoop("org.apache.hive" % "hive-exec"                      % version)
-    )
+      "org.apache.hive"          % "hive-exec"                      % version
+    ) map (noHadoop(_))
 
     def scalaz(version: String = versions.scalaz) = Seq(
       "org.scalaz"               %% "scalaz-core"                   % version,
@@ -166,7 +166,7 @@ object UniformDependencyPlugin extends Plugin {
     )
 
     def scalding(scalding: String = versions.scalding, algebird: String = versions.algebird) = Seq(
-      "com.twitter"              %% "scalding-core"                 % scalding,
+      noHadoop("com.twitter"     %% "scalding-core"                 % scalding),
       "com.twitter"              %% "algebird-core"                 % algebird
     )
 
@@ -187,6 +187,6 @@ object UniformDependencyPlugin extends Plugin {
 
     def parquet(version: String = versions.parquet) = Seq(
       "com.twitter"              % "parquet-cascading"              % version     % "provided"
-    )
+    ) map (noHadoop(_))
   }
 }
