@@ -49,7 +49,7 @@ object UniformDependencyPlugin extends Plugin {
       "commons-logging"           % "commons-logging"    % "1.1.3",
       "commons-codec"             % "commons-codec"      % "1.5",
       "commons-lang"              % "commons-lang"       % "2.6",
-      "commons-httpclient"        % "commons-httpclient" % "3.1" exclude("commons-logging", "commons-logging") exclude("commons-codec", "commons-codec"),
+      "commons-httpclient"        % "commons-httpclient" % "3.1",
       "org.apache.httpcomponents" % "httpclient"         % "4.2.5",
       "org.apache.httpcomponents" % "httpcore"           % "4.2.5",
       "com.google.guava"          % "guava"              % "11.0.2",
@@ -76,7 +76,7 @@ object UniformDependencyPlugin extends Plugin {
       "org.apache.thrift"         % "libthrift"          % "0.9.0-cdh5-2"
     )
 
-    val dependencies = modules.map(m => m % "provided")
+    val dependencies = modules.map(m => m % "provided" intransitive)
     val exclusions   = modules.map(m => ExclusionRule(m.organization, m.name))
   }
 
