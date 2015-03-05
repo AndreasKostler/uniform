@@ -49,7 +49,7 @@ object UniformDependencyPlugin extends Plugin {
       "commons-logging"           % "commons-logging"    % "1.1.3",
       "commons-codec"             % "commons-codec"      % "1.5",
       "commons-lang"              % "commons-lang"       % "2.6",
-      "commons-httpclient"        % "commons-httpclient" % "3.1",
+      "commons-httpclient"        % "commons-httpclient" % "3.1" exclude("commons-logging", "commons-logging"),
       "org.apache.httpcomponents" % "httpclient"         % "4.2.5",
       "org.apache.httpcomponents" % "httpcore"           % "4.2.5",
       "com.google.guava"          % "guava"              % "11.0.2",
