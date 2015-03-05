@@ -59,6 +59,7 @@ object UniformDependencyPlugin extends Plugin {
       "com.google.protobuf"       % "protobuf-java"      % "2.5.0",
       "io.netty"                  % "netty"              % "3.6.2.Final",
       "junit"                     % "junit"              % "4.11",
+      "jline"                     % "jline"              % "0.9.94",
 
       // asm changed from asm.asm-3.2, to org.ow2.asm.asm-4.0, so can't naively pin the version
       // TODO consider doing something more complicated to change all org.ow2.asm.asm deps to asm.asm-3.2
@@ -156,8 +157,7 @@ object UniformDependencyPlugin extends Plugin {
       "org.specs2"               %% "specs2"                        % specs       % "test" exclude("org.scalacheck", "scalacheck_2.10"),
       "org.mockito"              %  "mockito-all"                   % mockito     % "test",
       "org.scalacheck"           %% "scalacheck"                    % scalacheck  % "test",
-      "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test",
-      "org.clapper"              %% "classutil"                     % classutil   % "test" exclude("org.ow2.asm", "asm-util") exclude("org.ow2.asm", "asm") exclude("org.ow2.asm", "asm-tree")
+      "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test"
     )
 
     def time(joda: String = versions.jodaTime, nscala: String = versions.nscalaTime) = Seq(
