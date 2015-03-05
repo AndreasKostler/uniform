@@ -99,15 +99,15 @@ object UniformDependencyPlugin extends Plugin {
       def nscalaTime   = "1.2.0"
       def scalding     = "0.12.0"
       def algebird     = "0.7.1"
-      def log4j        = "1.2.17"
-      def slf4j        = "1.7.5"
+      def log4j        = hadoopCP.version("log4j", "log4j")
+      def slf4j        = hadoopCP.version("org.slf4j", "slf4j-api")
       def scallop      = "0.9.5"
-      def pegdown      = "1.4.2"
-      def classutil    = "1.0.5"
       def scrooge      = "3.14.1"
       def bijection    = "0.6.3"
       def hive         = "0.13.1-cdh5.2.0"
       def parquet      = "1.5.0-cdh5.2.0"
+      def asm          = hadoopCP.version("org.ow2.asm", "asm")
+      def scalaBin     = "2.10"     // User can use scalaBinaryVersion.value instead for a forwards compatible value
     }
 
     def omnia(project: String, version: String): Seq[ModuleID] =
@@ -123,13 +123,13 @@ object UniformDependencyPlugin extends Plugin {
       mockito: String    = versions.mockito,
       scalacheck: String = versions.scalacheck,
       scalaz: String     = versions.scalaz,
-      pegdown: String    = versions.pegdown,
-      classutil: String  = versions.classutil
+      asm: String        = versions.asm,
+      scalaBin: String   = versions.scalaBin
     ) =
       this.hadoop(hadoop) ++
       this.scalding(scalding, algebird) ++
       this.logging(log4j, slf4j) ++
-      this.testing(specs, mockito, scalacheck, scalaz, pegdown, classutil)
+      this.testing(specs, mockito, scalacheck, scalaz, asm, scalaBin)
 
     def hadoopClasspath = hadoopCP.dependencies
 
@@ -158,10 +158,9 @@ object UniformDependencyPlugin extends Plugin {
     def testing(
       specs: String = versions.specs, mockito: String = versions.mockito,
       scalacheck: String = versions.scalacheck, scalaz: String = versions.scalaz,
-      pegdown: String = versions.pegdown, classutil: String = versions.classutil,
-      asm: String = hadoopCP.version("org.ow2.asm", "asm")
+      asm: String = versions.asm, scalaBin: String = versions.scalaBin
     ) = Seq(
-      "org.specs2"               %% "specs2"                        % specs       % "test" exclude("org.scalacheck", s"scalacheck_${scalaBinaryVersion.value}") exclude("org.ow2.asm", "asm"),
+      "org.specs2"               %% "specs2"                        % specs       % "test" exclude("org.scalacheck", s"scalacheck_$scalaBin") exclude("org.ow2.asm", "asm"),
       "org.mockito"              %  "mockito-all"                   % mockito     % "test",
       "org.scalacheck"           %% "scalacheck"                    % scalacheck  % "test",
       "org.scalaz"               %% "scalaz-scalacheck-binding"     % scalaz      % "test",
@@ -188,9 +187,9 @@ object UniformDependencyPlugin extends Plugin {
       "org.rogach"               %% "scallop"                       % version
     )
 
-    def scrooge(scrooge: String = versions.scrooge, bijection: String = versions.bijection) = Seq(
+    def scrooge(scrooge: String = versions.scrooge, bijection: String = versions.bijection, scalaBin: String = versions.scalaBin) = Seq(
       "com.twitter"              %% "scrooge-core"                  % scrooge,
-      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", s"scrooge-core_${scalaBinaryVersion.value}")
+      "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", s"scrooge-core_$scalaBin")
     )
 
     def parquet(version: String = versions.parquet) = Seq(
