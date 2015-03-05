@@ -43,10 +43,12 @@ object UniformDependencyPlugin extends Plugin {
     // different projects could rely on different combinations of these, so cannot rely on "canonical" source
     // TODO parquet-cascading is marked as provided, so am I sure this is not on hadoop classpath? do I need to add extra jars to depend.parquet?
     // TODO reconsider way of solving this, for now using dependencyOverrides to pin version to latest one we could possibly pull in
-    dependencyOverrides += "org.apache.thrift"         % "libthrift"          % "0.9.0-cdh5-2"
+    dependencyOverrides += "org.apache.thrift"         % "libthrift"          % depend.versions.libthrift
   )
 
-  def noHadoop(module: ModuleID) = module.copy(exclusions = module.exclusions ++ hadoopCP.exclusions)
+  def noHadoop(module: ModuleID) = module.copy(
+    exclusions = module.exclusions ++ hadoopCP.modules.map(m => ExclusionRule(m.organization, m.name))
+  )
 
   object hadoopCP {
     val modules = List[ModuleID](
@@ -74,9 +76,6 @@ object UniformDependencyPlugin extends Plugin {
       "org.ow2.asm"               % "asm"                % "4.0",
       "asm"                       % "asm"                % "3.2"
     )
-
-    val dependencies = modules.map(m => m % "provided" intransitive)
-    val exclusions   = modules.map(m => ExclusionRule(m.organization, m.name))
 
     def version(org: String, name: String) =
       modules
@@ -106,6 +105,7 @@ object UniformDependencyPlugin extends Plugin {
       def hive         = "0.13.1-cdh5.2.0"
       def parquet      = "1.5.0-cdh5.2.0"
       def asm          = hadoopCP.version("org.ow2.asm", "asm")
+      def libthrift    = "0.9.0-cdh5-2"
       def scalaBin     = "2.10"     // User can use scalaBinaryVersion.value instead for a forwards compatible value
     }
 
@@ -130,7 +130,7 @@ object UniformDependencyPlugin extends Plugin {
       this.logging(log4j, slf4j) ++
       this.testing(specs, mockito, scalacheck, scalaz, asm, scalaBin)
 
-    def hadoopClasspath = hadoopCP.dependencies
+    def hadoopClasspath = hadoopCP.modules.map(m => m % "provided" intransitive)
 
     def hadoop(version: String = versions.hadoop) = Seq(
       "org.apache.hadoop"        %  "hadoop-client"                 % version        % "provided",
