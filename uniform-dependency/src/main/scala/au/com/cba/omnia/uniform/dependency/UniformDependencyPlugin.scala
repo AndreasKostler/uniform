@@ -69,6 +69,9 @@ object UniformDependencyPlugin extends Plugin {
       "io.netty"                  % "netty"              % "3.6.2.Final",
       "junit"                     % "junit"              % "4.11",
       "jline"                     % "jline"              % "0.9.94",
+      "org.apache.avro"           % "avro"               % "1.7.6-cdh5.2.0",
+      "org.mortbay.jetty"         % "jetty"              % "6.1.26.cloudera.2",
+      "org.mortbay.jetty"         % "jetty-util"         % "6.1.26.cloudera.2",
 
       // asm changed from asm.asm-3.2, to org.ow2.asm.asm-4.0, so can't naively pin the version
       // TODO consider doing something more complicated to change all org.ow2.asm.asm deps to asm.asm-3.2
