@@ -34,9 +34,16 @@ object UniformDependencyPlugin extends Plugin {
 
   val strictDependencySettings: Seq[Sett] = Seq[Sett](
     conflictManager := ConflictManager.strict,
-    dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-library" % sv)
-  ) ++ hadoopCP.modules.map(module =>
-    dependencyOverrides in Test += module
+
+    // pin scala version
+    dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-library" % sv),
+
+    // as far as I can tell, libthrift is not on the hadoop classpath
+    // different versions of libthrift are pulled in by depend.hive, depend.scrooge, and parquet-cascading
+    // different projects could rely on different combinations of these, so cannot rely on "canonical" source
+    // TODO parquet-cascading is marked as provided, so am I sure this is not on hadoop classpath? do I need to add extra jars to depend.parquet?
+    // TODO reconsider way of solving this, for now using dependencyOverrides to pin version to latest one we could possibly pull in
+    dependencyOverrides += "org.apache.thrift"         % "libthrift"          % "0.9.0-cdh5-2"
   )
 
   def noHadoop(module: ModuleID) = module.copy(exclusions = module.exclusions ++ hadoopCP.exclusions)
@@ -65,15 +72,7 @@ object UniformDependencyPlugin extends Plugin {
       // TODO consider doing something more complicated to change all org.ow2.asm.asm deps to asm.asm-3.2
       // for now just ensure that all org.ow2.asm.asm jars are as close to 3.2 as possible
       "org.ow2.asm"               % "asm"                % "4.0",
-      "asm"                       % "asm"                % "3.2",
-
-      // as far as I can tell, libthrift is not on the hadoop classpath
-      // different versions of libthrift are pulled in by depend.hive, depend.scrooge, and parquet-cascading
-      // different projects could rely on different combinations of these, so cannot rely on "canonical" source
-      // TODO parquet-cascading is marked as provided, so am I sure this is not on hadoop classpath? do I need to add extra jars to depend.parquet?
-      // TODO consider replacing pinned version with logic which chooses the latest version from the versions pulled in, just for this jar
-      // for now using dependencyOverrides to pin version to latest one we could possibly pull in
-      "org.apache.thrift"         % "libthrift"          % "0.9.0-cdh5-2"
+      "asm"                       % "asm"                % "3.2"
     )
 
     val dependencies = modules.map(m => m % "provided" intransitive)
