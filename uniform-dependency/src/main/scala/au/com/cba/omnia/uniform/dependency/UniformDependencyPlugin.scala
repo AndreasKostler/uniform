@@ -197,7 +197,7 @@ object UniformDependencyPlugin extends Plugin {
     def scrooge(scrooge: String = versions.scrooge, bijection: String = versions.bijection, scalaBin: String = versions.scalaBin) = Seq(
       "com.twitter"              %% "scrooge-core"                  % scrooge,
       "com.twitter"              %% "bijection-scrooge"             % bijection exclude("com.twitter", s"scrooge-core_$scalaBin")
-    )
+    ) map (noHadoop(_))
 
     def parquet(version: String = versions.parquet) = Seq(
       "com.twitter"              % "parquet-cascading"              % version     % "provided"
