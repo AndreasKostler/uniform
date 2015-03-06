@@ -38,12 +38,16 @@ object UniformDependencyPlugin extends Plugin {
     // pin scala version
     dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-library" % sv),
 
-    // as far as I can tell, libthrift is not on the hadoop classpath
-    // different versions of libthrift are pulled in by depend.hive, depend.scrooge, and parquet-cascading
-    // different projects could rely on different combinations of these, so cannot rely on "canonical" source
+    // override conflicting versions of modules which:
+    //   1) are depended on from modules in different depend.foo methods, thus we don't know which conflicting versions users will pull in
+    //   2) are not on the hadoop classpath and should must be excluded from all dependencies and be added separately via depend.hadoopClasspath
+
+    // depend.hive vs. depend.scrooge vs. parquet-cascading
     // TODO parquet-cascading is marked as provided, so am I sure this is not on hadoop classpath? do I need to add extra jars to depend.parquet?
-    // TODO reconsider way of solving this, for now using dependencyOverrides to pin version to latest one we could possibly pull in
-    dependencyOverrides += "org.apache.thrift"         % "libthrift"          % depend.versions.libthrift
+    dependencyOverrides += "org.apache.thrift" % "libthrift" % depend.versions.libthrift,
+
+    // depend.testing (specs2) vs. depend.scalding (scalding)
+    dependencyOverrides += "org.objenesis"     % "objenesis" % depend.versions.objenesis
   )
 
   def noHadoop(module: ModuleID) = module.copy(
@@ -109,6 +113,7 @@ object UniformDependencyPlugin extends Plugin {
       def parquet      = "1.5.0-cdh5.2.0"
       def asm          = hadoopCP.version("org.ow2.asm", "asm")
       def libthrift    = "0.9.0-cdh5-2"
+      def objenesis    = "1.2"
       def scalaBin     = "2.10"     // User can use scalaBinaryVersion.value instead for a forwards compatible value
     }
 
