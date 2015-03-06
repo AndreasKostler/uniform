@@ -37,6 +37,7 @@ object UniformDependencyPlugin extends Plugin {
 
     // pin scala version
     dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-library" % sv),
+    dependencyOverrides <+= scalaVersion(sv => "org.scala-lang" % "scala-compiler" % sv),
 
     // override conflicting versions of modules which:
     //   1) are depended on from modules in different depend.foo methods, thus we don't know which conflicting versions users will pull in
