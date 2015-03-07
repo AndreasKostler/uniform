@@ -57,8 +57,14 @@ object UniformDependencyPlugin extends Plugin {
 
   object hadoopCP {
     val modules = List[ModuleID](
+      "org.apache.hadoop"         % "hadoop-annotations"     % "2.5.0-cdh5.2.0",
+      "org.apache.hadoop"         % "hadoop-ant"             % "2.5.0-mr1-cdh5.2.0",
+      "org.apache.hadoop"         % "hadoop-auth"            % "2.5.0-cdh5.2.0",
       "org.apache.hadoop"         % "hadoop-common"          % "2.5.0-cdh5.2.0",
+      "org.apache.hadoop"         % "hadoop-core"            % "2.5.0-mr1-cdh5.2.0",
       "org.apache.hadoop"         % "hadoop-hdfs"            % "2.5.0-cdh5.2.0",
+      "org.apache.hadoop"         % "hadoop-hdfs-nfs"        % "2.5.0-cdh5.2.0",
+      "org.apache.hadoop"         % "hadoop-nfs"             % "2.5.0-cdh5.2.0",
       "org.slf4j"                 % "slf4j-api"              % "1.7.5",
       "org.slf4j"                 % "slf4j-log4j12"          % "1.7.5",
       "log4j"                     % "log4j"                  % "1.2.17",
