@@ -85,6 +85,7 @@ object UniformDependencyPlugin extends Plugin {
       "commons-net"               % "commons-net"            % "3.1",
       "org.apache.httpcomponents" % "httpclient"             % "4.2.5",
       "org.apache.httpcomponents" % "httpcore"               % "4.2.5",
+      "com.google.code.findbugs"  % "jsr305"                 % "1.3.9",
       "com.google.guava"          % "guava"                  % "11.0.2",
       "org.codehaus.jackson"      % "jackson-mapper-asl"     % "1.8.8",
       "org.codehaus.jackson"      % "jackson-core-asl"       % "1.8.8",
@@ -135,6 +136,7 @@ object UniformDependencyPlugin extends Plugin {
       def asm          = hadoopCP.version("org.ow2.asm", "asm")
       def libthrift    = "0.9.0-cdh5-2"
       def objenesis    = "1.2"
+      def avro         = hadoopCP.version("org.apache.avro", "avro")
       def scalaBin     = "2.10"     // User can use scalaBinaryVersion.value instead for a forwards compatible value
     }
 
