@@ -45,10 +45,13 @@ object UniformDependencyPlugin extends Plugin {
 
     // depend.hive vs. depend.scrooge vs. parquet-cascading
     // TODO parquet-cascading is marked as provided, so am I sure this is not on hadoop classpath? do I need to add extra jars to depend.parquet?
-    dependencyOverrides += "org.apache.thrift" % "libthrift" % depend.versions.libthrift,
+    dependencyOverrides += "org.apache.thrift"   % "libthrift" % depend.versions.libthrift,
 
     // depend.testing (specs2) vs. depend.scalding (scalding)
-    dependencyOverrides += "org.objenesis"     % "objenesis" % depend.versions.objenesis
+    dependencyOverrides += "org.objenesis"       % "objenesis" % depend.versions.objenesis,
+
+    // cascading-hive (hive-exec) and sqoop vs. avro-mapred
+    dependencyOverrides += "org.apache.velocity" % "velocity"  % "1.7"
   )
 
   def noHadoop(module: ModuleID) = module.copy(
