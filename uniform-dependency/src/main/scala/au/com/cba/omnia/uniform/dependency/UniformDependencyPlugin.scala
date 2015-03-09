@@ -126,7 +126,7 @@ object UniformDependencyPlugin extends Plugin {
       def scalacheck   = "1.11.4"    // Needs to align with what is required by scalaz-scalacheck-binding and specs2
       def shapeless    = "2.0.0-M1"  // Needs to align with what is required by specs2
       def mockito      = "1.9.0"
-      def jodaTime     = "2.3"
+      def jodaTime     = "2.4"
       def nscalaTime   = "1.2.0"
       def scalding     = "0.12.0"
       def algebird     = "0.7.1"
@@ -203,7 +203,7 @@ object UniformDependencyPlugin extends Plugin {
 
     def time(joda: String = versions.jodaTime, nscala: String = versions.nscalaTime) = Seq(
       "joda-time"                %  "joda-time"                     % joda,
-      "com.github.nscala-time"   %% "nscala-time"                   % nscala
+      "com.github.nscala-time"   %% "nscala-time"                   % nscala exclude("joda-time", "joda-time")
     )
 
     def scalding(scalding: String = versions.scalding, algebird: String = versions.algebird) = Seq(
