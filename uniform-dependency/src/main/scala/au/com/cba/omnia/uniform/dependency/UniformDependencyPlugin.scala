@@ -168,8 +168,7 @@ object UniformDependencyPlugin extends Plugin {
     def hadoopClasspath = hadoopCP.modules.map(m => m % "provided" intransitive)
 
     def hadoop(version: String = versions.hadoop) = Seq(
-      "org.apache.hadoop"        %  "hadoop-client"                 % version        % "provided",
-      "org.apache.hadoop"        %  "hadoop-core"                   % version        % "provided"
+      "org.apache.hadoop"        % "hadoop-client"                  % version
     ) map (noHadoop(_))
 
     def hive(version: String = versions.hive) = Seq(
