@@ -51,7 +51,11 @@ object UniformDependencyPlugin extends Plugin {
     dependencyOverrides += "org.objenesis"       % "objenesis" % depend.versions.objenesis,
 
     // cascading-hive (hive-exec) and sqoop vs. avro-mapred
-    dependencyOverrides += "org.apache.velocity" % "velocity"  % "1.7"
+    dependencyOverrides += "org.apache.velocity" % "velocity"  % "1.7",
+
+    // enforce version of jackson-mapper jars, to workaround issue #TODO: Create Issue!
+    dependencyOverrides += "org.codehaus.jackson" % "jackson-mapper-asl" % hadoopCP.version("org.codehaus.jackson", "jackson-mapper-asl"),
+    dependencyOverrides += "org.codehaus.jackson" % "jackson-core-asl"   % hadoopCP.version("org.codehaus.jackson", "jackson-core-asl")
   )
 
   def noHadoop(module: ModuleID) = module.copy(
