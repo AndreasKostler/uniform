@@ -124,7 +124,7 @@ object UniformDependencyPlugin extends Plugin {
 
   object depend {
     object versions {
-      def hadoop       = "2.5.0-mr1-cdh5.2.0"
+      def hadoop       = hadoopCP.version("org.apache.hadoop", "hadoop-core")
       def scalaz       = "7.1.0"
       def scalazStream = "0.5a"      // Needs to align with what is required by specs2
       def specs        = "2.4.13"
