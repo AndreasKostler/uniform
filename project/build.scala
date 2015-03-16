@@ -26,7 +26,7 @@ object build extends Build {
     Defaults.coreDefaultSettings ++ Seq[Sett](
       organization := "au.com.cba.omnia"
     , sbtPlugin := true
-    , scalaVersion := "2.10.4"
+    , scalaVersion := "2.10.5"
     , scalacOptions := Seq(
         "-deprecation"
       , "-unchecked"
@@ -57,7 +57,7 @@ object build extends Build {
   , settings = standardSettings ++ Seq[Sett](
       name := "uniform-core"
     , addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "0.8.1")
-    , addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.3.1")
+    , addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.3.2")
     )
   )
 
@@ -76,7 +76,7 @@ object build extends Build {
   , base = file("uniform-assembly")
   , settings = standardSettings ++ Seq[Sett](
       name := "uniform-assembly"
-    , addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.11.2")
+    , addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")
     )
   )
 

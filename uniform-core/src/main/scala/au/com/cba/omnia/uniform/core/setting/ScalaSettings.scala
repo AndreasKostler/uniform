@@ -21,8 +21,8 @@ import Keys._
 object ScalaSettings extends Plugin {
   object scala {
     def settings = Seq(
-      scalaVersion := "2.10.4",
-      crossScalaVersions := Seq("2.10.4"),
+      scalaVersion := "2.10.5",
+      crossScalaVersions := Seq("2.10.5"),
       scalacOptions ++= Seq(
         "-deprecation",
         "-unchecked",
